@@ -110,7 +110,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 
 	# deploy package
 	echo "Updating ${AMDADDR}"
-	OUTPUT="$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/kernelupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
+	OUTPUT="$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/centosupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
 	ERR=`echo -e "$OUTPUT" | tail -n 1`
 	if [ $ERR -ne 0 ]; then 
 		# failed or if U flag, already up to date
