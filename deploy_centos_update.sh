@@ -20,8 +20,8 @@ SSHUSER="root"
 # ensure it's not an encrypted key or you'll still have to enter a password many many times
 SSHKEY=""
 
-# ping timeout (ms), increase this if distant/slow AMDs fail the test.
-PINGTO=1000
+# ping timeout (s), increase this if distant/slow AMDs fail the test.
+PINGTO=2
 
 # file to deploy.
 DEPLOYPKG="dod_kernel_update.tar.bz2"
@@ -90,7 +90,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 
 	# test if AMD is alive
 	echo -e "\nTesting ${AMDADDR}"
-	(ping -W ${PINGTO} -c 4 ${AMDADDR} 2>&1 ) > /dev/nul 
+	(ping -W ${PINGTO} -c 4 ${AMDADDR} 2>&1 ) > /dev/null 
 	ERR=$?
 	if [ $ERR -ne 0 ]; then
 		echo "Couldn't ping AMD ${AMDADDR}. Skipping"
@@ -100,7 +100,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 
 	# upload package
 	echo "Uploading to ${AMDADDR}"
-	(${SCP} ${SSHKEY} ${DEPLOYPKG} ${SSHUSER}@${AMDADDR}:/tmp 2>&1) > /dev/nul
+	(${SCP} ${SSHKEY} ${DEPLOYPKG} ${SSHUSER}@${AMDADDR}:/tmp 2>&1) > /dev/null
 	ERR=$?
 	if [ $ERR -ne 0 ]; then
 		echo "Couldn't upload ${DEPLOYPKG} to ${AMDADDR}. Skipping"
