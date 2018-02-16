@@ -38,7 +38,7 @@ fi
 
 TMPDIR=$(mktemp -d)
 echo "Downloading update packages..."
-OUTPUT=$(sudo yum update --setopt=deltarpm=0 --downloadonly --downloaddir="${TMPDIR}/centosupdate/" ${PKGLIST} 2>&1)
+OUTPUT=$(sudo yum update --setopt=deltarpm=0 --downloadonly --downloaddir="${TMPDIR}/kernelupdate/" ${PKGLIST} 2>&1)
 RC=$?
 debugecho "OUTPUT:$OUTPUT"
 if [ $RC -ne 0 ]; then
