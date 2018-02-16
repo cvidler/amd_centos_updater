@@ -31,7 +31,9 @@ DEPLOYPKG="dod_kernel_update.tar.bz2"
 # "F" freshen packages, will report success if packagaes already up to date, will result in needless reboot of AMD 
 UPDATEFLG="F"
 
-
+# Additional ssh arguments. This optional argument suppresses manual host authenticity prompt. This occurs when an AMD has not been connected to previously.
+# This can be commented out to suppress this potentially insecure behaviour.
+OPTSSHARGS="-o ""StrictHostKeyChecking=no"""
 
 
 
@@ -88,6 +90,8 @@ AMDADDR=""
 echo -e "$AMDLIST" | while read AMDADDR; do
 	ERR=0
 
+	set -x
+
 	# test if AMD is alive
 	echo -e "\nTesting ${AMDADDR}"
 	(ping -W ${PINGTO} -c 4 ${AMDADDR} 2>&1 ) > /dev/null 
@@ -100,7 +104,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 
 	# upload package
 	echo "Uploading to ${AMDADDR}"
-	(${SCP} ${SSHKEY} ${DEPLOYPKG} ${SSHUSER}@${AMDADDR}:/tmp 2>&1) > /dev/null
+	(${SCP} ${OPTSSHARGS} ${SSHKEY} ${DEPLOYPKG} ${SSHUSER}@${AMDADDR}:/tmp 2>&1) > /dev/null
 	ERR=$?
 	if [ $ERR -ne 0 ]; then
 		echo "Couldn't upload ${DEPLOYPKG} to ${AMDADDR}. Skipping"
@@ -110,7 +114,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 
 	# deploy package
 	echo "Updating ${AMDADDR}"
-	OUTPUT="$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/centosupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
+	OUTPUT="$(${SSH} ${OPTSSHARGS} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/centosupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
 	ERR=`echo -e "$OUTPUT" | tail -n 1`
 	if [ $ERR -ne 0 ]; then 
 		# failed or if U flag, already up to date
@@ -121,7 +125,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 	else
 		# all good so restart AMD
 		echo "Restarting AMD ${AMDADDR}"
-		OUTPUT=$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} ${SUDO}' shutdown -r now ')
+		OUTPUT=$(${SSH} ${OPTSSHARGS} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} ${SUDO}' shutdown -r now ')
 	
 		SUCCESS="${SUCCESS}${AMDADDR}\n"
 	
