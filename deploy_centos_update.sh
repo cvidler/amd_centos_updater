@@ -121,7 +121,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 	else
 		# all good so restart AMD
 		echo "Restarting AMD ${AMDADDR}"
-		#OUTPUT=$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} ${SUDO}' shutdown -r now ')
+		OUTPUT=$(${SSH} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} ${SUDO}' shutdown -r now ')
 	
 		SUCCESS="${SUCCESS}${AMDADDR}\n"
 	
