@@ -33,7 +33,8 @@ UPDATEFLG="F"
 
 # Additional ssh arguments. This optional argument suppresses manual host authenticity prompt. This occurs when an AMD has not been connected to previously.
 # This can be commented out to suppress this potentially insecure behaviour.
-OPTSSHARGS="-o ""StrictHostKeyChecking=no"""
+OPTSSHARGS="-o StrictHostKeyChecking=no"
+
 
 
 
@@ -104,7 +105,7 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 	fi
 
 	# upload package
-	echo -e "\e[34mINFO:\e[39m Uploading to ${AMDADDR}"
+	echo "Uploading to ${AMDADDR}"
 	(${SCP} ${OPTSSHARGS} ${SSHKEY} ${DEPLOYPKG} ${SSHUSER}@${AMDADDR}:/tmp 2>&1) > /dev/null
 	ERR=$?
 	if [ $ERR -ne 0 ]; then
@@ -114,8 +115,8 @@ echo -e "$AMDLIST" | while read AMDADDR; do
 	fi
 
 	# deploy package
-	echo -e "\e[34mINFO:\e[39m Updating ${AMDADDR}"
-	OUTPUT="$(${SSH} ${OPTSSHARGS} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/kernelupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
+	echo "Updating ${AMDADDR}"
+	OUTPUT="$(${SSH} ${OPTSSHARGS} ${SSHKEY} -f ${SSHUSER}@${AMDADDR} 'uname -a ; cd /tmp ; tar -xjf /tmp/'${DEPLOYPKG}' && '${SUDO}'rpm -'$UPDATEFLG'i /tmp/centosupdate/*.rpm ; SERR=$? ; echo $SERR ' 2>&1 )"
 	ERR=`echo -e "$OUTPUT" | tail -n 1`
 	if [ $ERR -ne 0 ]; then 
 		# failed or if U flag, already up to date
