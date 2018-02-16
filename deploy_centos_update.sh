@@ -90,7 +90,8 @@ AMDADDR=""
 echo -e "$AMDLIST" | while read AMDADDR; do
 	ERR=0
 
-	set -x
+	#command line debugging
+	#set -x
 
 	# test if AMD is alive
 	echo -e "\nTesting ${AMDADDR}"
